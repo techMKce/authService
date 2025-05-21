@@ -36,6 +36,15 @@ public class JWTServiceImpl implements JWTService {
                 .compact();
     }
 
+    @Override
+    public String generateResetToken(Map<String, Object> extraClaims, UserDetails userDetails){
+        return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 15*60*1000)) // 15 minutes
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     private <T> T extractClaim(String token, Function<Claims, T> claimResolvers){
         final Claims claims = extractAllClaims(token);
         return claimResolvers.apply(claims);

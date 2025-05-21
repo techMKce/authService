@@ -10,6 +10,5 @@ public class Profile {
     private Long id;
     private String name;
     private String email;
-    private String contact;
     private Role role;
 }

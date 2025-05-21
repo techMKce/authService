@@ -10,15 +10,19 @@ import lombok.NonNull;
 public interface AuthenticationService {
     JwtAuthResponse signUp(@NonNull SignUpRequest signUpRequest);
 
+    boolean signUpFaculty(@NonNull SignUpRequest signUpRequest);
+
     JwtAuthResponse signIn(@NonNull SignInRequest signInRequest);
 
     JwtAuthResponse refreshToken(@NonNull RefreshTokenRequest refreshTokenRequest);
+
+    boolean verify(@NonNull String token);
 
     JwtAuthResponse currentUser(@NonNull String token);
 
     JwtAuthResponse updatePassword(@NonNull String token, @NonNull UpdatePasswordRequest updatePasswordRequest);
 
-    boolean updateUser(@NonNull Long id, @NonNull String name, @NonNull String profileImage);
+    boolean forgotPassword(@NonNull String email);
 
     void logout(@NonNull String token);
 }

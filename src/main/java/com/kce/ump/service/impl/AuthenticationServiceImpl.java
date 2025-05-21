@@ -6,12 +6,14 @@ import com.kce.ump.dto.request.SignInRequest;
 import com.kce.ump.dto.request.SignUpRequest;
 import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
+import com.kce.ump.emailContext.AccountVerificationEmailContext;
 import com.kce.ump.model.auth.RefreshToken;
 import com.kce.ump.model.user.Role;
 import com.kce.ump.model.user.User;
 import com.kce.ump.repository.RefreshTokenRepository;
 import com.kce.ump.repository.UserRepository;
 import com.kce.ump.service.AuthenticationService;
+import com.kce.ump.service.EmailService;
 import com.kce.ump.service.JWTService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final RefreshTokenRepository refreshTokenRepository;
-
+    private final EmailService emailService;
     @Override
     public JwtAuthResponse signUp(@NonNull SignUpRequest signUpRequest) {
 
@@ -56,6 +58,25 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             jwtAuthResponse.setRefreshToken(refreshToken);
             jwtAuthResponse.setProfile(UserMapper.toProfile(user));
             return jwtAuthResponse;
+        }
+    }
+
+    @Override
+    public boolean signUpFaculty(@NonNull SignUpRequest signUpRequest) {
+
+        User dbUser = userRepository.findByEmail(signUpRequest.getEmail()).orElse(null);
+        if(dbUser != null){
+            throw new IllegalArgumentException("User already exists");
+        }else{
+            User user = new User();
+            user.setName(signUpRequest.getName());
+            user.setEmail(signUpRequest.getEmail());
+            user.setRole(Role.FACULTY);
+            user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+            user.setCreatedAt(LocalDate.now());
+            user.setUpdatedAt(LocalDate.now());
+            userRepository.save(user);
+            return true;
         }
     }
 
@@ -89,6 +110,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
+    @Override
+    public boolean verify(@NonNull String token) {
+        String email = jwtService.extractUsername(token);
+        User user = userRepository.findByEmail(email).orElse(null);
+        if(user == null){
+            return false;
+        }
+        return jwtService.isTokenValid(token, user);
+    }
 
 
     @Override
@@ -114,10 +144,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return null;
         }
         System.out.println(user.toString());
-        String oldPassword = passwordEncoder.encode(updatePasswordRequest.getOldPassword());
-        if(user.getPassword().equals(oldPassword)) {
-            throw new IllegalArgumentException("Old password is incorrect");
-        }
         user.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
         user.setUpdatedAt(LocalDate.now());
         userRepository.save(user);
@@ -130,17 +156,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return jwtAuthResponse;
     }
 
-    @Transactional
     @Override
-    public boolean updateUser(@NonNull Long id, @NonNull String name, @NonNull String contactNumber) {
-        User user = userRepository.findById(id).orElse(null);
-        if(user == null) {
+    public boolean forgotPassword(@NonNull String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
             return false;
         }
-        user.setName(name);
-        user.setContact(contactNumber);
-        user.setUpdatedAt(LocalDate.now());
-        userRepository.save(user);
+        String resetToken = jwtService.generateResetToken(new HashMap<>(), user);
+        AccountVerificationEmailContext context = new AccountVerificationEmailContext();
+        context.init(user);
+        context.setToken(resetToken);
+        context.buildVerificationUrl("http://localhost:8080");
+        emailService.sendEmail(context);
         return true;
     }
 
