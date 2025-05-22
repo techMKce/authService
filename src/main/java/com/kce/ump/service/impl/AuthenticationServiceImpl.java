@@ -3,7 +3,6 @@ package com.kce.ump.service.impl;
 import com.kce.ump.dto.Mapper.UserMapper;
 import com.kce.ump.dto.request.RefreshTokenRequest;
 import com.kce.ump.dto.request.SignInRequest;
-import com.kce.ump.dto.request.SignUpRequest;
 import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
 import com.kce.ump.emailContext.AccountVerificationEmailContext;
@@ -35,52 +34,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JWTService jwtService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final EmailService emailService;
-    @Override
-    public JwtAuthResponse signUp(@NonNull SignUpRequest signUpRequest) {
 
-        User dbUser = userRepository.findByEmail(signUpRequest.getEmail()).orElse(null);
+
+    @Override
+    public boolean signUp(String regNum, String name, String email, String department, Role role) {
+
+        User dbUser = userRepository.findByEmail(email).orElse(null);
         if(dbUser != null){
             throw new IllegalArgumentException("User already exists");
         }else{
             User user = new User();
-            user.setName(signUpRequest.getName());
-            user.setEmail(signUpRequest.getEmail());
-            user.setRole(Role.STUDENT);
-            user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-            user.setRegNum(signUpRequest.getRegNum());
+            user.setName(name);
+            user.setEmail(email);
+            user.setRole(role);
+            user.setPassword(passwordEncoder.encode("karpagam"));
+            user.setRegNum(regNum);
+            user.setDepartment(department);
             user.setCreatedAt(LocalDate.now());
             user.setUpdatedAt(LocalDate.now());
-            userRepository.save(user);
-            String jwtToken = jwtService.generateToken(user);
-            String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
-            refreshTokenRepository.save(new RefreshToken(refreshToken, user));
-            JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-            jwtAuthResponse.setToken(jwtToken);
-            jwtAuthResponse.setRefreshToken(refreshToken);
-            jwtAuthResponse.setProfile(UserMapper.toProfile(user));
-            return jwtAuthResponse;
-        }
-    }
-
-    @Override
-    public boolean signUpFaculty(@NonNull SignUpRequest signUpRequest) {
-
-        User dbUser = userRepository.findByEmail(signUpRequest.getEmail()).orElse(null);
-        if(dbUser != null){
-            throw new IllegalArgumentException("User already exists");
-        }else{
-            User user = new User();
-            user.setName(signUpRequest.getName());
-            user.setEmail(signUpRequest.getEmail());
-            user.setRole(Role.FACULTY);
-            user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-            user.setCreatedAt(LocalDate.now());
-            user.setUpdatedAt(LocalDate.now());
-            user.setRegNum(signUpRequest.getRegNum());
             userRepository.save(user);
             return true;
         }
     }
+
+
+
 
     @Override
     public JwtAuthResponse signIn(@NonNull SignInRequest signInRequest){

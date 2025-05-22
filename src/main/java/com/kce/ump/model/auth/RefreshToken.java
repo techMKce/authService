@@ -16,7 +16,6 @@ public class RefreshToken {
     private Long id;
 
     private String token;
-    private boolean revoked = false;
 
     @ManyToOne
     private User user;

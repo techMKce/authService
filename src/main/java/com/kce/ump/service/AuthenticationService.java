@@ -2,15 +2,14 @@ package com.kce.ump.service;
 
 import com.kce.ump.dto.request.RefreshTokenRequest;
 import com.kce.ump.dto.request.SignInRequest;
-import com.kce.ump.dto.request.SignUpRequest;
 import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
+import com.kce.ump.model.user.Role;
 import lombok.NonNull;
 
 public interface AuthenticationService {
-    JwtAuthResponse signUp(@NonNull SignUpRequest signUpRequest);
 
-    boolean signUpFaculty(@NonNull SignUpRequest signUpRequest);
+    boolean signUp(String regNum, String name, String email, String department, Role role);
 
     JwtAuthResponse signIn(@NonNull SignInRequest signInRequest);
 

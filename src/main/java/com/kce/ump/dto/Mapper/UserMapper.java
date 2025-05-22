@@ -10,6 +10,7 @@ public class UserMapper {
                 .name(user.getName())
                 .email(user.getEmail())
                 .regNum(user.getRegNum())
+                .department(user.getDepartment())
                 .role(user.getRole())
                 .build();
     }
