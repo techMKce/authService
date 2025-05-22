@@ -47,6 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setEmail(signUpRequest.getEmail());
             user.setRole(Role.STUDENT);
             user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+            user.setRegNum(signUpRequest.getRegNum());
             user.setCreatedAt(LocalDate.now());
             user.setUpdatedAt(LocalDate.now());
             userRepository.save(user);
@@ -75,6 +76,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
             user.setCreatedAt(LocalDate.now());
             user.setUpdatedAt(LocalDate.now());
+            user.setRegNum(signUpRequest.getRegNum());
             userRepository.save(user);
             return true;
         }
