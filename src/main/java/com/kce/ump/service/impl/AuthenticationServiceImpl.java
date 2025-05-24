@@ -153,35 +153,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return true;
     }
 
-    @Override
-    public List<UserDto> fetchAllStudents(@NonNull String token) {
-        String email = jwtService.extractUsername(token);
-        User currentUser = userRepository.findByEmail(email).orElseThrow();
-
-        if (currentUser.getRole() != Role.ADMIN && currentUser.getRole() != Role.FACULTY) {
-            throw new SecurityException("Unauthorized access");
-        }
-
-        List<User> students = userRepository.findAllByRole(Role.STUDENT);
-        return students.stream()
-                .map(UserMapper::toUserDto)
-                .toList();
+    public List<User> getAllStudents() {
+        return userRepository.findAllByRole(Role.STUDENT);
     }
 
-    @Override
-    public List<UserDto> fetchAllFaculty(@NonNull String token) {
-        String email = jwtService.extractUsername(token);
-        User currentUser = userRepository.findByEmail(email).orElseThrow();
-
-        if (currentUser.getRole() != Role.ADMIN) {
-            throw new SecurityException("Unauthorized access");
-        }
-
-        List<User> faculty = userRepository.findAllByRole(Role.FACULTY);
-        return faculty.stream()
-                .map(UserMapper::toUserDto)
-                .toList();
+    public List<User> getAllFaculty() {
+        return userRepository.findAllByRole(Role.FACULTY);
     }
+
 
 
     @Transactional

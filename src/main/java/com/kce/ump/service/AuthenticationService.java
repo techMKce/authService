@@ -6,6 +6,7 @@ import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
 import com.kce.ump.dto.response.UserDto;
 import com.kce.ump.model.user.Role;
+import com.kce.ump.model.user.User;
 import lombok.NonNull;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public interface AuthenticationService {
 
     void logout(@NonNull String token);
 
-    List<UserDto> fetchAllStudents(@NonNull String token);
-    List<UserDto> fetchAllFaculty(@NonNull String token);
+    List<User> getAllStudents();
+    List<User> getAllFaculty();
+
 }

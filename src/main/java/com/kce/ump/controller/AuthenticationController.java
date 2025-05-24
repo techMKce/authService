@@ -4,6 +4,7 @@ import com.kce.ump.dto.request.*;
 import com.kce.ump.dto.response.JwtAuthResponse;
 import com.kce.ump.dto.response.UserDto;
 import com.kce.ump.model.user.Role;
+import com.kce.ump.model.user.User;
 import com.kce.ump.service.AuthenticationService;
 import com.kce.ump.service.JWTService;
 import com.opencsv.CSVReader;
@@ -109,19 +110,18 @@ public class AuthenticationController {
     }
 
 
-    @GetMapping("/student/all")
-    public ResponseEntity<List<UserDto>> allStudent(@RequestHeader("Authorization") String token) {
-        String jwtToken = token.substring(7);
-        List<UserDto> students = authenticationService.fetchAllStudents(jwtToken);
+    @GetMapping("/students")
+    public ResponseEntity<List<User>> getAllStudents() {
+        List<User> students = authenticationService.getAllStudents();
         return ResponseEntity.ok(students);
     }
 
-    @GetMapping("/faculty/all")
-    public ResponseEntity<List<UserDto>> allFaculty(@RequestHeader("Authorization") String token) {
-        String jwtToken = token.substring(7);
-        List<UserDto> faculty = authenticationService.fetchAllFaculty(jwtToken);
+    @GetMapping("/faculty")
+    public ResponseEntity<List<User>> getAllFaculty() {
+        List<User> faculty = authenticationService.getAllFaculty();
         return ResponseEntity.ok(faculty);
     }
+
 
     @GetMapping
     public ResponseEntity<JwtAuthResponse> currentUser(@RequestHeader("Authorization") String token) {
