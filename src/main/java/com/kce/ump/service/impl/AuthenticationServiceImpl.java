@@ -5,6 +5,7 @@ import com.kce.ump.dto.request.RefreshTokenRequest;
 import com.kce.ump.dto.request.SignInRequest;
 import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
+import com.kce.ump.dto.response.UserDto;
 import com.kce.ump.emailContext.AccountVerificationEmailContext;
 import com.kce.ump.model.auth.RefreshToken;
 import com.kce.ump.model.user.Role;
@@ -24,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -151,10 +154,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return true;
     }
 
+    @Override
+    public List<UserDto> getAllStudents() {
+        List<User> students = userRepository.findAllByRole(Role.STUDENT);
+        return students.stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDto> getAllFaculty() {
+        List<User> faculty = userRepository.findAllByRole(Role.FACULTY);
+        return faculty.stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
+    }
+
+
     @Transactional
     @Override
     public void logout(@NonNull String token) {
         refreshTokenRepository.deleteByToken(token);
         System.out.println("Logout successful for token: " + token);
     }
+
 }

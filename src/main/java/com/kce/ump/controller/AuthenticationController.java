@@ -2,7 +2,9 @@ package com.kce.ump.controller;
 
 import com.kce.ump.dto.request.*;
 import com.kce.ump.dto.response.JwtAuthResponse;
+import com.kce.ump.dto.response.UserDto;
 import com.kce.ump.model.user.Role;
+import com.kce.ump.model.user.User;
 import com.kce.ump.service.AuthenticationService;
 import com.kce.ump.service.JWTService;
 import com.opencsv.CSVReader;
@@ -106,6 +108,18 @@ public class AuthenticationController {
     public ResponseEntity<Boolean> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         return ResponseEntity.ok(authenticationService.forgotPassword(forgotPasswordRequest.getEmail()));
     }
+
+    @GetMapping("/students/all")
+    public ResponseEntity<List<UserDto>> getAllStudents() {
+        return ResponseEntity.ok(authenticationService.getAllStudents());
+    }
+
+    @GetMapping("/faculty/all")
+    public ResponseEntity<List<UserDto>> getAllFaculty() {
+        return ResponseEntity.ok(authenticationService.getAllFaculty());
+    }
+
+
 
     @GetMapping
     public ResponseEntity<JwtAuthResponse> currentUser(@RequestHeader("Authorization") String token) {
