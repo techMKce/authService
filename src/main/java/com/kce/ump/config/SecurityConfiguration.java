@@ -1,5 +1,6 @@
 package com.kce.ump.config;
 
+import com.kce.ump.model.user.Role;
 import com.kce.ump.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -41,7 +42,10 @@ public class SecurityConfiguration {
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html"
                         ).permitAll()
-
+                        .requestMatchers("/api/v1/profile/**",
+                                "/api/v1/course/**",
+                                "/api/v1/attendance/**",
+                                "/api/v1/assignment/**").hasAnyAuthority(Role.ADMIN.name(), Role.STUDENT.name(), Role.FACULTY.name())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -55,7 +59,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:8081","http://10.56.2.99:8082","http://localhost:8082", "http://172.16.73.199:8082"));
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
