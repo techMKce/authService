@@ -5,6 +5,7 @@ import com.kce.ump.dto.request.RefreshTokenRequest;
 import com.kce.ump.dto.request.SignInRequest;
 import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
+import com.kce.ump.dto.response.UserDto;
 import com.kce.ump.emailContext.AccountVerificationEmailContext;
 import com.kce.ump.model.auth.RefreshToken;
 import com.kce.ump.model.user.Role;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -151,10 +153,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return true;
     }
 
+    @Override
+    public List<UserDto> fetchAllStudents(@NonNull String token) {
+        String email = jwtService.extractUsername(token);
+        User currentUser = userRepository.findByEmail(email).orElseThrow();
+
+        if (currentUser.getRole() != Role.ADMIN && currentUser.getRole() != Role.FACULTY) {
+            throw new SecurityException("Unauthorized access");
+        }
+
+        List<User> students = userRepository.findAllByRole(Role.STUDENT);
+        return students.stream()
+                .map(UserMapper::toUserDto)
+                .toList();
+    }
+
+    @Override
+    public List<UserDto> fetchAllFaculty(@NonNull String token) {
+        String email = jwtService.extractUsername(token);
+        User currentUser = userRepository.findByEmail(email).orElseThrow();
+
+        if (currentUser.getRole() != Role.ADMIN) {
+            throw new SecurityException("Unauthorized access");
+        }
+
+        List<User> faculty = userRepository.findAllByRole(Role.FACULTY);
+        return faculty.stream()
+                .map(UserMapper::toUserDto)
+                .toList();
+    }
+
+
     @Transactional
     @Override
     public void logout(@NonNull String token) {
         refreshTokenRepository.deleteByToken(token);
         System.out.println("Logout successful for token: " + token);
     }
+
 }

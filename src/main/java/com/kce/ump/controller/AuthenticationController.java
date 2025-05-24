@@ -2,6 +2,7 @@ package com.kce.ump.controller;
 
 import com.kce.ump.dto.request.*;
 import com.kce.ump.dto.response.JwtAuthResponse;
+import com.kce.ump.dto.response.UserDto;
 import com.kce.ump.model.user.Role;
 import com.kce.ump.service.AuthenticationService;
 import com.kce.ump.service.JWTService;
@@ -105,6 +106,21 @@ public class AuthenticationController {
     @PostMapping("/forgotPassword")
     public ResponseEntity<Boolean> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         return ResponseEntity.ok(authenticationService.forgotPassword(forgotPasswordRequest.getEmail()));
+    }
+
+
+    @GetMapping("/student/all")
+    public ResponseEntity<List<UserDto>> allStudent(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        List<UserDto> students = authenticationService.fetchAllStudents(jwtToken);
+        return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/faculty/all")
+    public ResponseEntity<List<UserDto>> allFaculty(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        List<UserDto> faculty = authenticationService.fetchAllFaculty(jwtToken);
+        return ResponseEntity.ok(faculty);
     }
 
     @GetMapping

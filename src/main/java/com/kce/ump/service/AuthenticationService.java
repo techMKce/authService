@@ -4,8 +4,11 @@ import com.kce.ump.dto.request.RefreshTokenRequest;
 import com.kce.ump.dto.request.SignInRequest;
 import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
+import com.kce.ump.dto.response.UserDto;
 import com.kce.ump.model.user.Role;
 import lombok.NonNull;
+
+import java.util.List;
 
 public interface AuthenticationService {
 
@@ -24,4 +27,7 @@ public interface AuthenticationService {
     boolean forgotPassword(@NonNull String email);
 
     void logout(@NonNull String token);
+
+    List<UserDto> fetchAllStudents(@NonNull String token);
+    List<UserDto> fetchAllFaculty(@NonNull String token);
 }
