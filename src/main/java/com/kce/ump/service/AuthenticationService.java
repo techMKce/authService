@@ -29,7 +29,9 @@ public interface AuthenticationService {
 
     void logout(@NonNull String token);
 
-    List<User> getAllStudents();
-    List<User> getAllFaculty();
+
+    List<UserDto> getAllStudents();
+
+    List<UserDto> getAllFaculty();
 
 }

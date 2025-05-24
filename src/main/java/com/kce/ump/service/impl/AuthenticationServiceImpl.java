@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -153,14 +154,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return true;
     }
 
-    public List<User> getAllStudents() {
-        return userRepository.findAllByRole(Role.STUDENT);
+    @Override
+    public List<UserDto> getAllStudents() {
+        List<User> students = userRepository.findAllByRole(Role.STUDENT);
+        return students.stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
-    public List<User> getAllFaculty() {
-        return userRepository.findAllByRole(Role.FACULTY);
+    @Override
+    public List<UserDto> getAllFaculty() {
+        List<User> faculty = userRepository.findAllByRole(Role.FACULTY);
+        return faculty.stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
-
 
 
     @Transactional

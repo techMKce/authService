@@ -109,18 +109,16 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.forgotPassword(forgotPasswordRequest.getEmail()));
     }
 
-
     @GetMapping("/students")
-    public ResponseEntity<List<User>> getAllStudents() {
-        List<User> students = authenticationService.getAllStudents();
-        return ResponseEntity.ok(students);
+    public ResponseEntity<List<UserDto>> getAllStudents() {
+        return ResponseEntity.ok(authenticationService.getAllStudents());
     }
 
     @GetMapping("/faculty")
-    public ResponseEntity<List<User>> getAllFaculty() {
-        List<User> faculty = authenticationService.getAllFaculty();
-        return ResponseEntity.ok(faculty);
+    public ResponseEntity<List<UserDto>> getAllFaculty() {
+        return ResponseEntity.ok(authenticationService.getAllFaculty());
     }
+
 
 
     @GetMapping
