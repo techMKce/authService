@@ -32,8 +32,8 @@ public class AuthenticationController {
     private final JWTService jwtService;
 
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestParam("for") String role, @RequestParam("file")MultipartFile file){
+    @PostMapping("/signup/all")
+    public ResponseEntity<?> bulkSignup(@RequestParam("for") String role, @RequestParam("file")MultipartFile file){
         try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             CSVReader csvReader = new CSVReader(reader);
             List<String[]> records = csvReader.readAll();
@@ -62,10 +62,26 @@ public class AuthenticationController {
         }
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestParam("for") String role, @RequestBody SignUpRequest signUpRequest) {
+        System.out.println("signing up user: "+signUpRequest.toString());
+        Role userRole = Role.valueOf(role.toUpperCase());
+        if(authenticationService.signUp(signUpRequest.getRegnum(), signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getDepartment(), userRole)){
+            return ResponseEntity.ok("User registered successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
+        }
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> signIn(@RequestBody SignInRequest signInRequest) {
+    public ResponseEntity<?> signIn(@RequestBody SignInRequest signInRequest) {
         System.out.println("signing in user: "+signInRequest.toString());
-        return ResponseEntity.ok(authenticationService.signIn(signInRequest));
+        try{
+            JwtAuthResponse response = authenticationService.signIn(signInRequest);
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
     }
 
     @PostMapping("/refresh")
@@ -105,8 +121,16 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgotPassword")
-    public ResponseEntity<Boolean> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
-        return ResponseEntity.ok(authenticationService.forgotPassword(forgotPasswordRequest.getEmail()));
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        try{
+            boolean isValid = authenticationService.forgotPassword(forgotPasswordRequest.getEmail());
+            if (!isValid) {
+                throw new Exception("User not found or email not registered");
+            }
+            return ResponseEntity.ok(true);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/students/all")

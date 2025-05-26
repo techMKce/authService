@@ -11,7 +11,6 @@ public class Profile {
     private String name;
     private String email;
     private String regNum;
-    private String year;
     private String department;
     private Role role;
 }

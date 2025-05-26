@@ -23,7 +23,6 @@ public class User implements UserDetails {
     private String name;
     private String regNum;
     private String email;
-    private String year;
     private String department;
     private String password;
     private Role role;
