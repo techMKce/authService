@@ -11,7 +11,6 @@ public class UserMapper {
                 .name(user.getName())
                 .email(user.getEmail())
                 .regNum(user.getRegNum())
-                .year(user.getYear())
                 .department(user.getDepartment())
                 .role(user.getRole())
                 .build();
@@ -22,7 +21,6 @@ public class UserMapper {
         dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         dto.setRegNum(user.getRegNum());
-        dto.setYear(user.getYear());
         dto.setDepartment(user.getDepartment());
         return dto;
     }
