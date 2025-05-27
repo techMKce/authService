@@ -4,8 +4,9 @@ import lombok.Data;
 
 @Data
 public class SignUpRequest {
+    private String id;
     private String email;
     private String name;
-    private String regnum;
     private String department;
+    private String year;
 }

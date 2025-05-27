@@ -2,9 +2,8 @@ package com.kce.ump.controller;
 
 import com.kce.ump.dto.request.*;
 import com.kce.ump.dto.response.JwtAuthResponse;
-import com.kce.ump.dto.response.UserDto;
+import com.kce.ump.model.user.Profile;
 import com.kce.ump.model.user.Role;
-import com.kce.ump.model.user.User;
 import com.kce.ump.service.AuthenticationService;
 import com.kce.ump.service.JWTService;
 import com.opencsv.CSVReader;
@@ -42,13 +41,14 @@ public class AuthenticationController {
             List<String> users = new ArrayList<>();
 
             for (String[] record : records) {
-                String regNum = record[0];
+                String id = record[0];
                 String name = record[1];
                 String email = record[2];
                 String department = record[3];
+                String year = record.length > 4 ? record[4] : null; // Handle optional year field
 
-                if(!authenticationService.signUp(regNum,name,email,department, userRole)){
-                    users.add(regNum);
+                if(!authenticationService.signUp(id,name,email,department,year, userRole)){
+                    users.add(id);
                 }
             }
             if(users.isEmpty()){
@@ -66,11 +66,20 @@ public class AuthenticationController {
     public ResponseEntity<?> signup(@RequestParam("for") String role, @RequestBody SignUpRequest signUpRequest) {
         System.out.println("signing up user: "+signUpRequest.toString());
         Role userRole = Role.valueOf(role.toUpperCase());
-        if(authenticationService.signUp(signUpRequest.getRegnum(), signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getDepartment(), userRole)){
-            return ResponseEntity.ok("User registered successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
+        if(userRole == Role.FACULTY){
+            if(authenticationService.signUp(signUpRequest.getId(), signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getDepartment(),null, userRole)){
+                return ResponseEntity.ok("User registered successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
+            }
+        }else{
+            if(authenticationService.signUp(signUpRequest.getId(), signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getDepartment(),signUpRequest.getYear(), userRole)){
+                return ResponseEntity.ok("User registered successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
+            }
         }
+
     }
 
     @PostMapping("/login")
@@ -134,12 +143,12 @@ public class AuthenticationController {
     }
 
     @GetMapping("/students/all")
-    public ResponseEntity<List<UserDto>> getAllStudents() {
+    public ResponseEntity<List<Profile>> getAllStudents() {
         return ResponseEntity.ok(authenticationService.getAllStudents());
     }
 
     @GetMapping("/faculty/all")
-    public ResponseEntity<List<UserDto>> getAllFaculty() {
+    public ResponseEntity<List<Profile>> getAllFaculty() {
         return ResponseEntity.ok(authenticationService.getAllFaculty());
     }
 

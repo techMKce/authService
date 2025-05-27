@@ -4,16 +4,16 @@ import com.kce.ump.dto.request.RefreshTokenRequest;
 import com.kce.ump.dto.request.SignInRequest;
 import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
-import com.kce.ump.dto.response.UserDto;
+import com.kce.ump.model.user.Profile;
 import com.kce.ump.model.user.Role;
-import com.kce.ump.model.user.User;
 import lombok.NonNull;
 
 import java.util.List;
 
 public interface AuthenticationService {
 
-    boolean signUp(String regNum, String name, String email, String department, Role role);
+
+    boolean signUp(String id, String name, String email, String department, String year, Role role);
 
     JwtAuthResponse signIn(@NonNull SignInRequest signInRequest);
 
@@ -30,8 +30,8 @@ public interface AuthenticationService {
     void logout(@NonNull String token);
 
 
-    List<UserDto> getAllStudents();
+    List<Profile> getAllStudents();
 
-    List<UserDto> getAllFaculty();
+    List<Profile> getAllFaculty();
 
 }
