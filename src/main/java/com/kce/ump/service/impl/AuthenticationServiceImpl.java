@@ -5,9 +5,9 @@ import com.kce.ump.dto.request.RefreshTokenRequest;
 import com.kce.ump.dto.request.SignInRequest;
 import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
-import com.kce.ump.dto.response.UserDto;
 import com.kce.ump.emailContext.AccountVerificationEmailContext;
 import com.kce.ump.model.auth.RefreshToken;
+import com.kce.ump.model.user.Profile;
 import com.kce.ump.model.user.Role;
 import com.kce.ump.model.user.User;
 import com.kce.ump.repository.RefreshTokenRepository;
@@ -40,18 +40,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public boolean signUp(String regNum, String name, String email, String department, Role role) {
+    public boolean signUp(String id, String name, String email, String department, String year, Role role) {
 
         User dbUser = userRepository.findByEmail(email).orElse(null);
         if(dbUser != null){
             throw new IllegalArgumentException("User already exists");
         }else{
             User user = new User();
+            user.setId(id);
             user.setName(name);
             user.setEmail(email);
             user.setRole(role);
+            if(role == Role.STUDENT) {
+                user.setYear(year);
+            }
             user.setPassword(passwordEncoder.encode("karpagam"));
-            user.setRegNum(regNum);
             user.setDepartment(department);
             user.setCreatedAt(LocalDate.now());
             user.setUpdatedAt(LocalDate.now());
@@ -155,18 +158,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public List<UserDto> getAllStudents() {
+    public List<Profile> getAllStudents() {
         List<User> students = userRepository.findAllByRole(Role.STUDENT);
         return students.stream()
-                .map(UserMapper::toUserDto)
+                .map(UserMapper::toProfile)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<UserDto> getAllFaculty() {
+    public List<Profile> getAllFaculty() {
         List<User> faculty = userRepository.findAllByRole(Role.FACULTY);
         return faculty.stream()
-                .map(UserMapper::toUserDto)
+                .map(UserMapper::toProfile)
                 .collect(Collectors.toList());
     }
 

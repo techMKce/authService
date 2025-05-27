@@ -17,14 +17,12 @@ import lombok.Data;
 public class User implements UserDetails {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String id;
     private String name;
-    private String regNum;
     private String email;
     private String department;
     private String password;
+    private String year;
     private Role role;
     private LocalDate createdAt;
     private LocalDate updatedAt;
