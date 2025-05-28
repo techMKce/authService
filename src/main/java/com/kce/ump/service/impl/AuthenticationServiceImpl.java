@@ -56,8 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
             int password = 100000 + new java.util.Random().nextInt(900000);
             String passwordStr = String.valueOf(password);
-
-            //TODO: Send email with password
+            emailService.welcomeMail(email,passwordStr);
             user.setPassword(passwordEncoder.encode(passwordStr));
             user.setDepartment(department);
             user.setCreatedAt(LocalDate.now());

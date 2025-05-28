@@ -1,8 +1,6 @@
 package com.kce.ump.service.impl;
 
-import com.kce.ump.emailContext.AbstractEmailContext;
 import com.kce.ump.emailContext.AccountVerificationEmailContext;
-import com.kce.ump.model.user.User;
 import com.kce.ump.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,6 +12,17 @@ import org.springframework.stereotype.Service;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
+
+    @Override
+    public void welcomeMail(String toEmail, String password) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("Welcome to ZenoUMS ");
+        message.setText("Welcome Onboard: Please Find the Login Credentials below\n Email: " + toEmail +"\nPassword:" + password);
+        message.setFrom("vignesh.dev.se@gmail.com");
+
+        mailSender.send(message);
+    }
 
 
     @Override
