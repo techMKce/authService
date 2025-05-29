@@ -184,4 +184,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         System.out.println("Logout successful for token: " + token);
     }
 
+
+    @Override
+    public User getUserById(String id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }

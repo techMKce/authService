@@ -6,6 +6,7 @@ import com.kce.ump.dto.request.UpdatePasswordRequest;
 import com.kce.ump.dto.response.JwtAuthResponse;
 import com.kce.ump.model.user.Profile;
 import com.kce.ump.model.user.Role;
+import com.kce.ump.model.user.User;
 import lombok.NonNull;
 
 import java.util.List;
@@ -34,4 +35,5 @@ public interface AuthenticationService {
 
     List<Profile> getAllFaculty();
 
+    User getUserById(String id);
 }
