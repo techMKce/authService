@@ -41,8 +41,18 @@ public class RouteController {
         return proxyRequest(request, body, attendanceService);
     }
 
-    @RequestMapping("/assignment/**")
+    @RequestMapping("/assignments/**")
     public ResponseEntity<?> assignmentProxy(HttpServletRequest request, @RequestBody(required = false) String body) {
+        return proxyRequest(request, body, assignmentService);
+    }
+
+    @RequestMapping("/gradings/**")
+    public ResponseEntity<?> gradingProxy(HttpServletRequest request, @RequestBody(required = false) String body) {
+        return proxyRequest(request, body, assignmentService);
+    }
+
+    @RequestMapping("/submissions/**")
+    public ResponseEntity<?> submissionProxy(HttpServletRequest request, @RequestBody(required = false) String body) {
         return proxyRequest(request, body, assignmentService);
     }
 
@@ -50,14 +60,22 @@ public class RouteController {
         try{
             String path = request.getRequestURI();
             String query = request.getQueryString();
+            System.out.println(query);
             String url = serviceUrl + path + (query != null ? "?" + query : "");
+            System.out.println("url: " + url);
 
             HttpHeaders headers = new HttpHeaders();
             Collections.list(request.getHeaderNames()).forEach(
                     h -> headers.set(h, request.getHeader(h))
             );
             HttpMethod method = HttpMethod.valueOf(request.getMethod());
-            HttpEntity<String> entity = new HttpEntity<>(body, headers);
+            HttpEntity<String> entity;
+
+            if (method == HttpMethod.POST || method == HttpMethod.PUT || method == HttpMethod.PATCH) {
+                entity = new HttpEntity<>(body, headers);
+            } else {
+                entity = new HttpEntity<>(headers);
+            }
 
             return restTemplate.exchange(url, method, entity, String.class);
         }catch (Exception e){
