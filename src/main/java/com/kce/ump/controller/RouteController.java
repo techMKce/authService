@@ -45,7 +45,7 @@ public class RouteController {
         return proxyRequest(request, profileService);
     }
 
-    @RequestMapping("faculty-student-assigning/admin")
+    @RequestMapping("/faculty-student-assigning/admin/**")
     public ResponseEntity<?> facultyStudentAssignmentProxy(HttpServletRequest request) {
         System.out.println("Faculty Student Assignment Proxy Called");
         return proxyRequest(request, profileService);
@@ -59,6 +59,7 @@ public class RouteController {
 
     @RequestMapping("/attendance/**")
     public ResponseEntity<?> attendanceProxy(HttpServletRequest request) {
+//        System.out.println(request);
         return proxyRequest(request, attendanceService);
     }
 
