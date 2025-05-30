@@ -24,7 +24,7 @@ public interface AuthenticationService {
 
     JwtAuthResponse currentUser(@NonNull String token);
 
-    JwtAuthResponse updatePassword(@NonNull String token, @NonNull UpdatePasswordRequest updatePasswordRequest);
+    boolean updatePassword(@NonNull UpdatePasswordRequest updatePasswordRequest);
 
     boolean forgotPassword(@NonNull String email);
 

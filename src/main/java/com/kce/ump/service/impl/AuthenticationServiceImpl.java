@@ -125,24 +125,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Transactional
     @Override
-    public JwtAuthResponse updatePassword(@NonNull String token, @NonNull UpdatePasswordRequest updatePasswordRequest) {
-        System.out.println("updating password"+token);
-        String email = jwtService.extractUsername(token);
-        User user = userRepository.findByEmail(email).orElse(null);
+    public boolean updatePassword(@NonNull UpdatePasswordRequest updatePasswordRequest) {
+        User user = userRepository.findByEmail(updatePasswordRequest.getEmail()).orElse(null);
         if(user == null) {
-            return null;
+            return false;
         }
         System.out.println(user.toString());
         user.setPassword(passwordEncoder.encode(updatePasswordRequest.getNewPassword()));
         user.setUpdatedAt(LocalDate.now());
         userRepository.save(user);
-        String jwtToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
-        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-        jwtAuthResponse.setToken(jwtToken);
-        jwtAuthResponse.setRefreshToken(refreshToken);
-        jwtAuthResponse.setProfile(UserMapper.toProfile(user));
-        return jwtAuthResponse;
+        return true;
     }
 
     @Override
@@ -157,6 +149,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         context.setToken(resetToken);
         context.buildVerificationUrl("http://localhost:8080");
         emailService.sendEmail(context);
+        System.out.println("Forgot password email sent to: " + email);
         return true;
     }
 

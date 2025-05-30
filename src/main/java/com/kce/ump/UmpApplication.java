@@ -35,5 +35,31 @@ public class UmpApplication implements CommandLineRunner {
 			user.setPassword(new BCryptPasswordEncoder().encode("admin123"));
 			userRepository.save(user);
 		}
+
+		User u = userRepository.findByEmail("faculty@gmail.com")
+				.orElse(null);
+
+		if(u==null) {
+			User user = new User();
+			user.setId("f123");
+			user.setName("Faculty");
+			user.setEmail("faculty@gmail.com");
+			user.setRole(Role.FACULTY);
+			user.setPassword(new BCryptPasswordEncoder().encode("faculty123"));
+			userRepository.save(user);
+		}
+
+		User studUser = userRepository.findByEmail("student@gmail.com")
+				.orElse(null);
+
+		if(studUser == null) {
+			User user = new User();
+			user.setId("s123");
+			user.setName("Student");
+			user.setEmail("Student@gmail.com");
+			user.setRole(Role.STUDENT);
+			user.setPassword(new BCryptPasswordEncoder().encode("student123"));
+			userRepository.save(user);
+		}
 	}
 }

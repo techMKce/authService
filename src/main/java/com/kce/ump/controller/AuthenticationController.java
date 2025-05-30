@@ -106,11 +106,9 @@ public class AuthenticationController {
     }
 
     @PostMapping("/updatePassword")
-    public ResponseEntity<JwtAuthResponse> updatePassword(@RequestHeader("Authorization") String token, @RequestBody UpdatePasswordRequest updatePasswordRequest) {
-        //TODO: after integrating to frontend
+    public ResponseEntity<Boolean> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
         System.out.println("updating user: "+updatePasswordRequest.toString());
-        String jwtToken = token.substring(7);
-        return ResponseEntity.ok(authenticationService.updatePassword(jwtToken, updatePasswordRequest));
+        return ResponseEntity.ok(authenticationService.updatePassword(updatePasswordRequest));
     }
 
     @GetMapping("/verify")
