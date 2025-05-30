@@ -204,4 +204,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.delete(user);
     }
 
+
+    @Override
+    public User getUserById(String id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }
