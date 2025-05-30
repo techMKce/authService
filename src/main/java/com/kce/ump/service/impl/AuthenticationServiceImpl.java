@@ -184,4 +184,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         System.out.println("Logout successful for token: " + token);
     }
 
+    @Override
+    public Profile updateUser(@NonNull String id, @NonNull Profile updatedProfile) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setName(updatedProfile.getName());
+        user.setEmail(updatedProfile.getEmail());
+        user.setDepartment(updatedProfile.getDepartment());
+        user.setYear(updatedProfile.getYear());
+        user.setUpdatedAt(LocalDate.now());
+
+        userRepository.save(user);
+        return UserMapper.toProfile(user);
+    }
+
+    @Override
+    public void deleteUser(@NonNull String id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        userRepository.delete(user);
+    }
+
 }

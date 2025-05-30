@@ -34,4 +34,8 @@ public interface AuthenticationService {
 
     List<Profile> getAllFaculty();
 
+    Profile updateUser(@NonNull String id, @NonNull Profile updatedProfile);
+
+    void deleteUser(@NonNull String id);
+
 }

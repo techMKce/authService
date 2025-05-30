@@ -142,6 +142,8 @@ public class AuthenticationController {
         }
     }
 
+
+
     @GetMapping("/students/all")
     public ResponseEntity<List<Profile>> getAllStudents() {
         return ResponseEntity.ok(authenticationService.getAllStudents());
@@ -152,8 +154,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.getAllFaculty());
     }
 
-
-
     @GetMapping
     public ResponseEntity<JwtAuthResponse> currentUser(@RequestHeader("Authorization") String token) {
         System.out.println("getting current user");
@@ -161,4 +161,25 @@ public class AuthenticationController {
         JwtAuthResponse jwtAuthResponse = authenticationService.currentUser(jwtToken);
         return ResponseEntity.ok(jwtAuthResponse);
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody Profile updatedProfile) {
+        try {
+            Profile updated = authenticationService.updateUser(id, updatedProfile);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable String id) {
+        try {
+            authenticationService.deleteUser(id);
+            return ResponseEntity.ok("User deleted successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 }
