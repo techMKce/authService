@@ -77,6 +77,10 @@ public class RouteController {
     public ResponseEntity<?> submissionsProxy(HttpServletRequest request) {
         return proxyRequest(request, assignmentService);
     }
+    @RequestMapping("/todos/**")
+    public ResponseEntity<?> todosProxy(HttpServletRequest request) {
+        return proxyRequest(request, assignmentService);
+    }
 
     @RequestMapping("/submissions")
     public ResponseEntity<?> submissionProxy(HttpServletRequest request) {

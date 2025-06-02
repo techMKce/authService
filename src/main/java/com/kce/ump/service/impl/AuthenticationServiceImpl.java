@@ -194,7 +194,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void deleteUser(@NonNull String id) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        userRepository.delete(user);
+        if(user != null){
+            List<RefreshToken> token = refreshTokenRepository.findByUserId(user.getId());
+            for(RefreshToken rt : token) {
+                refreshTokenRepository.delete(rt);
+            }
+            userRepository.delete(user);
+        }
     }
 
 
