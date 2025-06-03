@@ -22,11 +22,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +40,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JWTService jwtService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final EmailService emailService;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
 
     @Override
@@ -199,7 +204,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             for(RefreshToken rt : token) {
                 refreshTokenRepository.delete(rt);
             }
-            userRepository.delete(user);
+            if(user.getRole()==Role.STUDENT) {
+                String url = "http://localhost:8082/api/v1/profile/admin/student/delete/" + id;
+                try {
+                    restTemplate.delete(url);
+                } catch (Exception e) {
+                    System.out.println("Failed to delete user in profile service: " + e.getMessage());
+                }
+                userRepository.delete(user);
+            }
+            if(user.getRole()==Role.FACULTY) {
+                String url = "http://localhost:8082/api/v1/profile/admin/faculty/delete/" + id;
+                try {
+                    restTemplate.delete(url);
+                } catch (Exception e) {
+                    System.out.println("Failed to delete the User " + e.getMessage());
+                }
+                userRepository.delete(user);
+            }
         }
     }
 
