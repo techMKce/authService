@@ -45,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public boolean signUp(String id, String name, String email, String department, String year, Role role) {
+    public boolean signUp(String id, String name, String email, String department, String year, Role role ,Integer semester) {
 
         User dbUser = userRepository.findByEmail(email).orElse(null);
         if(dbUser != null){
@@ -58,6 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setRole(role);
             if(role == Role.STUDENT) {
                 user.setYear(year);
+                user.setSemester(semester);
             }
             int password = 100000 + new java.util.Random().nextInt(900000);
             String passwordStr = String.valueOf(password);
@@ -189,6 +190,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setName(updatedProfile.getName());
         user.setEmail(updatedProfile.getEmail());
         user.setDepartment(updatedProfile.getDepartment());
+        user.setSemester(updatedProfile.getSemester());
         user.setYear(updatedProfile.getYear());
         user.setUpdatedAt(LocalDate.now());
 

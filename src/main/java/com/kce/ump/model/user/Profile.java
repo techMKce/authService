@@ -11,6 +11,7 @@ public class Profile {
     private String name;
     private String email;
     private String department;
+    private Integer semester;
     private String year;
     private Role role;
 }
