@@ -45,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public boolean signUp(String id, String name, String email, String department, String year, Role role ,String semester) {
+    public boolean signUp(String id, String name, String email, String department, String year, Role role ,Integer semester) {
 
         User dbUser = userRepository.findByEmail(email).orElse(null);
         if(dbUser != null){
