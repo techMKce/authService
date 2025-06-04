@@ -14,7 +14,7 @@ import java.util.List;
 public interface AuthenticationService {
 
 
-    boolean signUp(String id, String name, String email, String department, String year, Role role);
+    boolean signUp(String id, String name, String email, String department, String year, Role role,String semester);
 
     JwtAuthResponse signIn(@NonNull SignInRequest signInRequest);
 

@@ -45,9 +45,9 @@ public class AuthenticationController {
                 String name = record[1];
                 String email = record[2];
                 String department = record[3];
-                String year = record.length > 4 ? record[4] : null; // Handle optional year field
-
-                if(!authenticationService.signUp(id,name,email,department,year, userRole)){
+                String year = record.length > 4 ? record[4] : null;// Handle optional year field
+                String semester=record[5];
+                if(!authenticationService.signUp(id,name,email,department,year, userRole,semester)){
                     users.add(id);
                 }
             }
@@ -67,13 +67,13 @@ public class AuthenticationController {
         System.out.println("signing up user: "+signUpRequest.toString());
         Role userRole = Role.valueOf(role.toUpperCase());
         if(userRole == Role.FACULTY){
-            if(authenticationService.signUp(signUpRequest.getId(), signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getDepartment(),null, userRole)){
+            if(authenticationService.signUp(signUpRequest.getId(), signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getDepartment(),null, userRole,null)){
                 return ResponseEntity.ok("User registered successfully");
             } else {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
             }
         }else{
-            if(authenticationService.signUp(signUpRequest.getId(), signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getDepartment(),signUpRequest.getYear(), userRole)){
+            if(authenticationService.signUp(signUpRequest.getId(), signUpRequest.getName(), signUpRequest.getEmail(), signUpRequest.getDepartment(),signUpRequest.getYear(), userRole ,signUpRequest.getSemester())){
                 return ResponseEntity.ok("User registered successfully");
             } else {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");

@@ -9,4 +9,5 @@ public class SignUpRequest {
     private String name;
     private String department;
     private String year;
+    private String semester;
 }
