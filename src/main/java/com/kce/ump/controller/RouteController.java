@@ -114,7 +114,7 @@ public class RouteController {
             // Non-multipart: read as string
             String body = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
             HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
-            return restTemplate.exchange(url, method, requestEntity, String.class);
+            return restTemplate.exchange(url, method, requestEntity, byte[].class);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,6 +168,6 @@ public class RouteController {
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(multipartMap, headers);
 
-        return restTemplate.exchange(url, method, requestEntity, String.class);
+        return restTemplate.exchange(url, method, requestEntity, byte[].class);
     }
 }
