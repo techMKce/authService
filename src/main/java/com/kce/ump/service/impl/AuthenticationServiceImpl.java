@@ -208,8 +208,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
             if(user.getRole()==Role.STUDENT) {
                 String url = "http://localhost:8082/api/v1/profile/admin/student/delete/" + id;
+                String attendanceServiceUrl = "http://localhost:8084/api/v1/attendance/deletestudentid?studentid=" +id;
                 try {
                     restTemplate.delete(url);
+                    restTemplate.delete(attendanceServiceUrl);
                 } catch (Exception e) {
                     System.out.println("Failed to delete user in profile service: " + e.getMessage());
                 }
